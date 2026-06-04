@@ -1,0 +1,36 @@
+package factory;
+
+import exception.DadosObrigatoriosException;
+import exception.DataInvalidaException;
+import exception.ValorInvalidoException;
+import java.time.LocalDateTime;
+import model.Consulta;
+import model.Medico;
+import model.Paciente;
+import model.StatusConsulta;
+
+public abstract class ConsultaFactory {
+    public static Consulta criarConsulta(int id, Paciente paciente, Medico medico, LocalDateTime dataHora, StatusConsulta status, double valor) throws Exception {
+
+        if (paciente == null) {
+            throw new DadosObrigatoriosException("Paciente é obrigatório");
+        }
+        if (medico == null) {
+            throw new DadosObrigatoriosException("Médico é obrigatório");
+        }
+        if (dataHora == null) {
+            throw new DadosObrigatoriosException("Data e hora são obrigatórias");
+        }
+        if (status == null) {
+            throw new DadosObrigatoriosException("Status é obrigatório");
+        }
+        if (dataHora.isBefore(LocalDateTime.now())) {
+            throw new DataInvalidaException("Data da consulta não pode ser no passado");
+        }
+        if (valor < 0) {
+            throw new ValorInvalidoException("Valor da consulta não pode ser negativo");
+        }
+        
+        return new Consulta(id, paciente, medico, dataHora, status, valor);
+    }
+}
