@@ -11,7 +11,17 @@ public class Consulta implements Agendavel, Serializable {
     private StatusConsulta status;
     private double valor;
 
+    public Consulta(int id, Paciente paciente, Medico medico, LocalDateTime dataHora, double valor) {
+        this.id = id;
+        this.paciente = paciente;
+        this.medico = medico;
+        this.dataHora = dataHora;
+        this.status = StatusConsulta.AGENDADA;
+        this.valor = valor;
+    }
+
     public Consulta(int id, Paciente paciente, Medico medico, LocalDateTime dataHora, StatusConsulta status, double valor) {
+    this.status = status;
         this.id = id;
         this.paciente = paciente;
         this.medico = medico;
@@ -62,12 +72,6 @@ public class Consulta implements Agendavel, Serializable {
 
     public void setValor(double valor) {
         this.valor = valor;
-    }
-
-    @Override
-    public void agendar(LocalDateTime dataHora) {
-        this.dataHora = dataHora;
-        this.status = StatusConsulta.AGENDADA;
     }
 
     @Override
