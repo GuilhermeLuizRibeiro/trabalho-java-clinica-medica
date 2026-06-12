@@ -2,6 +2,7 @@ package model;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 
 public class Paciente extends Pessoa {
     private TipoSanguineo tipoSanguineo;
@@ -36,7 +37,14 @@ public class Paciente extends Pessoa {
 
     @Override
     public String exibirResumo() {
-        return "Paciente: " + nome + " | Idade: " + calcularIdade() + " anos";
+        return "Id:             " + id + "\n" +
+           "Nome:           " + nome + "\n" +
+           "CPF:            " + cpf + "\n" +
+           "Telefone:       " + telefone + "\n" +
+           "E-mail:         " + email + "\n" +
+           "Nascimento:     " + dataNascimento.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
+           "Tipo Sanguíneo: " + tipoSanguineo.getTipo() + "\n" +
+           "Convênio:       " + (convenio.isBlank() ? "Nenhum" : convenio);
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public abstract class Log {
-    public static String CAMINHO = "src/log/";
+    public static String CAMINHO = "projeto_clinica_medica/src/log/";
     private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
     public static void registrarErros() throws IOException {

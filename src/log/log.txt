@@ -1,0 +1,2 @@
+[ERRO] 11/06/2026 17:03:51 | Nenhum paciente cadastrado.
+[ERRO] 11/06/2026 17:05:50 | Erro ao cadastrar paciente: 13: Arquivo não encontrado

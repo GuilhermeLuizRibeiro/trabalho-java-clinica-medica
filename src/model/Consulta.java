@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Consulta implements Agendavel, Serializable {
     private int id;
@@ -72,6 +73,15 @@ public class Consulta implements Agendavel, Serializable {
 
     public void setValor(double valor) {
         this.valor = valor;
+    }
+
+    public String exibirResumo() {
+        return "Id:       " + id + "\n" +
+            "Paciente: " + paciente.getNome() + "\n" +
+            "Médico:   " + medico.getNome() + "\n" +
+            "Data:     " + dataHora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + "\n" +
+            "Status:   " + status.getStatus() + "\n" +
+            "Valor:    R$ " + String.format("%.2f", valor);
     }
 
     @Override

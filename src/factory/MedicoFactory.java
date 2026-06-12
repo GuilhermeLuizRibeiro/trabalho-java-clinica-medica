@@ -10,7 +10,7 @@ import model.Especialidade;
 import model.Medico;
 
 public abstract class MedicoFactory {
-    public static Medico criarMedico(String crm, Especialidade especialidade, double salarioBase, int id, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) throws Exception {
+    public static Medico criarMedico(String crm, Especialidade especialidade, double salarioBase, int id, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) throws DadosObrigatoriosException, CpfInvalidoException, CrmInvalidoException, ValorInvalidoException, DataInvalidaException {
 
         if (nome == null || nome.isBlank()) {
             throw new DadosObrigatoriosException("Nome é obrigatório");

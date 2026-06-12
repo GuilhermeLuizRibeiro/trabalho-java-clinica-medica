@@ -2,6 +2,7 @@ package model;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 
 public class Medico extends Pessoa {
     private String crm;
@@ -50,8 +51,15 @@ public class Medico extends Pessoa {
 
     @Override
     public String exibirResumo() {
-        // TODO Auto-generated method stub
-        return null;
+        return "Id:             " + id + "\n" +
+            "Nome:           " + nome + "\n" +
+            "CPF:            " + cpf + "\n" +
+            "Telefone:       " + telefone + "\n" +
+            "E-mail:         " + email + "\n" +
+            "Nascimento:     " + dataNascimento.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
+            "CRM:            " + crm + "\n" +
+            "Especialidade:  " + especialidade.getEspecialidade() + "\n" +
+            "Salário:   R$ " + String.format("%.2f", salarioBase);
     }
 
     @Override

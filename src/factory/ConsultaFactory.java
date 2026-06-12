@@ -10,7 +10,7 @@ import model.Paciente;
 import model.StatusConsulta;
 
 public abstract class ConsultaFactory {
-    public static Consulta criarConsulta(int id, Paciente paciente, Medico medico, LocalDateTime dataHora, double valor) throws Exception {
+    public static Consulta criarConsulta(int id, Paciente paciente, Medico medico, LocalDateTime dataHora, double valor) throws DadosObrigatoriosException, DataInvalidaException, ValorInvalidoException {
 
         if (paciente == null) {
             throw new DadosObrigatoriosException("Paciente é obrigatório");
@@ -31,7 +31,7 @@ public abstract class ConsultaFactory {
         return new Consulta(id, paciente, medico, dataHora, valor);
     }
 
-    public static Consulta criarConsulta(int id, Paciente paciente, Medico medico, LocalDateTime dataHora, StatusConsulta status, double valor) throws Exception {
+    public static Consulta criarConsulta(int id, Paciente paciente, Medico medico, LocalDateTime dataHora, StatusConsulta status, double valor) throws DadosObrigatoriosException, DataInvalidaException, ValorInvalidoException {
         
         if (paciente == null) {
             throw new DadosObrigatoriosException("Paciente é obrigatório");

@@ -15,9 +15,9 @@ import java.util.List;
 import model.Paciente;
 
 public abstract class PacienteDao {
-    private static final File CAMINHO = new File("src/obj/pacientes.ser");
+    private static final File CAMINHO = new File("projeto_clinica_medica/src/obj/pacientes.ser");
 
-    public static void adicionarPaciente(Paciente paciente) throws Exception {
+    public static void adicionarPaciente(Paciente paciente) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException {
         try {
             CAMINHO.getParentFile().mkdirs();
             List<Paciente> pacientes = new ArrayList<>();
@@ -34,50 +34,65 @@ public abstract class PacienteDao {
             throw new ErroAoLerArquivoException("Erro ao carregar lista de pacientes");
         } catch (ArquivoNaoEncontradoException e) {
             throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
+        } catch (ClassNotFoundException e) {
+            throw new ErroAoLerArquivoException("Erro ao deserializar pacientes existentes");
         }
     }
 
-    public static void alterarPaciente(Paciente paciente) throws Exception {
+    public static void alterarPaciente(Paciente paciente) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException {
         try {
             List<Paciente> pacientes = listarPacientes();
             pacientes.replaceAll(p -> p.getId() == paciente.getId() ? paciente : p);
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(CAMINHO));
             oos.writeObject(pacientes);
             oos.close();
-
-        } catch (Exception e) {
-            throw new Exception("Erro ao alterar paciente");
+        } catch (ClassNotFoundException e) {
+            throw new ErroAoLerArquivoException("Erro ao deserializar pacientes existentes");
+        } catch (ArquivoNaoEncontradoException e) {
+            throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
+        } catch (ErroAoLerArquivoException e) {
+            throw new ErroAoLerArquivoException("Erro ao carregar lista de pacientes");
+        } catch (IOException e) {
+            throw new ErroAoSalvarException("Erro ao salvar alteração do paciente");
         }
     }
 
-    public static void deletarPaciente(int id) throws Exception {
+    public static void deletarPaciente(int id) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException {
         try {
             List<Paciente> pacientes = listarPacientes();
             pacientes.removeIf(p -> p.getId() == id);
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(CAMINHO));
             oos.writeObject(pacientes);
             oos.close();
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
+            throw new ErroAoLerArquivoException("Erro ao deserializar pacientes existentes");
+        } catch (ArquivoNaoEncontradoException e) {
+            throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
+        } catch (ErroAoLerArquivoException e) {
+            throw new ErroAoLerArquivoException("Erro ao carregar lista de pacientes");
+        } catch (IOException e) {
             throw new ErroAoSalvarException("Erro ao deletar paciente");
         }
     }
 
-    public static Paciente buscarPacientePorId(int id) throws Exception {
+    public static Paciente buscarPacientePorId(int id) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, PacienteNaoEncontradoException {
         try {
             List<Paciente> pacientes = listarPacientes();
             return pacientes.stream()
                     .filter(p -> p.getId() == id)
                     .findFirst()
                     .orElseThrow(() -> new PacienteNaoEncontradoException("Paciente não encontrado"));
-        } catch (PacienteNaoEncontradoException e) {
-            throw new PacienteNaoEncontradoException("Paciente não encontrado");
-        } catch (IOException e) {
-            throw new ErroAoLerArquivoException("Erro ao buscar paciente");
+        } catch (ClassNotFoundException e) {
+            throw new ErroAoLerArquivoException("Erro ao deserializar pacientes existentes");
+        } catch (ArquivoNaoEncontradoException e) {
+            throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
+        } catch (ErroAoLerArquivoException e) {
+            throw new ErroAoLerArquivoException("Erro ao carregar lista de pacientes");
         }
     }
 
     @SuppressWarnings("unchecked")
-    public static List<Paciente> listarPacientes() throws Exception {
+    public static List<Paciente> listarPacientes() throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ClassNotFoundException {
         try {
             if (!CAMINHO.exists() || !CAMINHO.isFile()) {
                 throw new ArquivoNaoEncontradoException("Arquivo não encontrado");

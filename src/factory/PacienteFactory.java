@@ -8,7 +8,7 @@ import model.Paciente;
 import model.TipoSanguineo;
 
 public abstract class PacienteFactory {
-    public static Paciente criarPaciente(TipoSanguineo tipoSanguineo, String convenio, int id, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) throws Exception {
+    public static Paciente criarPaciente(TipoSanguineo tipoSanguineo, String convenio, int id, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) throws DadosObrigatoriosException, CpfInvalidoException, DataInvalidaException {
 
         if (nome == null || nome.isBlank()) {
             throw new DadosObrigatoriosException("Nome é obrigatório");
