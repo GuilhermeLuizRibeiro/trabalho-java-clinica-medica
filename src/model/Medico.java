@@ -7,17 +7,13 @@ import java.time.format.DateTimeFormatter;
 public class Medico extends Pessoa {
     private String crm;
     private Especialidade especialidade;
-    private double salarioBase;
+    private double salario;
 
-    public Medico(String crm, Especialidade especialidade, double salarioBase, int id, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) {
+    public Medico(String crm, Especialidade especialidade, double salario, int id, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) {
         super(id, nome, cpf, telefone, email, dataNascimento);
         this.crm = crm;
         this.especialidade = especialidade;
-        this.salarioBase = salarioBase;
-    }
-
-    public double calcularBonus(double percentual) {
-        return salarioBase + (salarioBase * (percentual / 100));
+        this.salario = salario;
     }
 
     public String getCrm() {
@@ -36,12 +32,12 @@ public class Medico extends Pessoa {
         this.especialidade = especialidade;
     }
 
-    public double getSalarioBase() {
-        return salarioBase;
+    public double getsalario() {
+        return salario;
     }
 
-    public void setSalarioBase(double salarioBase) {
-        this.salarioBase = salarioBase;
+    public void setsalario(double salario) {
+        this.salario = salario;
     }
 
     @Override
@@ -53,19 +49,20 @@ public class Medico extends Pessoa {
     public String exibirResumo() {
         return "Id:             " + id + "\n" +
             "Nome:           " + nome + "\n" +
+            "Idade:          " + calcularIdade() + " anos\n" +
             "CPF:            " + cpf + "\n" +
             "Telefone:       " + telefone + "\n" +
             "E-mail:         " + email + "\n" +
             "Nascimento:     " + dataNascimento.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
             "CRM:            " + crm + "\n" +
             "Especialidade:  " + especialidade.getEspecialidade() + "\n" +
-            "Salário:   R$ " + String.format("%.2f", salarioBase);
+            "Salário:   R$ " + String.format("%.2f", salario);
     }
 
     @Override
     public String toString() {
         return "Medico [id=" + id + ", crm=" + crm + ", nome=" + nome + ", cpf=" + cpf + ", telefone=" + telefone
-                + ", especialidade=" + especialidade + ", email=" + email + ", salarioBase=" + salarioBase
+                + ", especialidade=" + especialidade + ", email=" + email + ", salario=" + salario
                 + ", dataNascimento=" + dataNascimento + "]";
     }
 }

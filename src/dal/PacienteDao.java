@@ -15,7 +15,7 @@ import java.util.List;
 import model.Paciente;
 
 public abstract class PacienteDao {
-    private static final File CAMINHO = new File("projeto_clinica_medica/src/obj/pacientes.ser");
+    private static final File CAMINHO = new File("src/obj/pacientes.ser");
 
     public static void adicionarPaciente(Paciente paciente) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException {
         try {

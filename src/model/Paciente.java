@@ -39,6 +39,7 @@ public class Paciente extends Pessoa {
     public String exibirResumo() {
         return "Id:             " + id + "\n" +
            "Nome:           " + nome + "\n" +
+           "Idade:          " + calcularIdade() + " anos\n" +
            "CPF:            " + cpf + "\n" +
            "Telefone:       " + telefone + "\n" +
            "E-mail:         " + email + "\n" +

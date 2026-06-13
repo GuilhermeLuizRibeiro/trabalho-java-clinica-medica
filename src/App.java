@@ -1,4 +1,3 @@
-
 import controller.ClinicaController;
 import util.Log;
 import view.ClinicaView;

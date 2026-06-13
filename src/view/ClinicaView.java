@@ -168,13 +168,12 @@ public class ClinicaView {
             System.out.println("== Consultas ==");
             System.out.println("===============");
             System.out.println("[1] Agendar Consulta");
-            System.out.println("[2] Alterar Consulta");
-            System.out.println("[3] Deletar Consulta");
-            System.out.println("[4] Cancelar Consulta");
-            System.out.println("[5] Remarcar Consulta");
-            System.out.println("[6] Listar Consultas");
-            System.out.println("[7] Listar Consultas por Médico");
-            System.out.println("[8] Listar Consultas por Status");
+            System.out.println("[2] Deletar Consulta");
+            System.out.println("[3] Cancelar Consulta");
+            System.out.println("[4] Remarcar Consulta");
+            System.out.println("[5] Listar Consultas");
+            System.out.println("[6] Listar Consultas por Médico");
+            System.out.println("[7] Listar Consultas por Status");
             System.out.println("[0] Voltar");
             System.out.println();
 
@@ -184,24 +183,21 @@ public class ClinicaView {
                     agendarConsulta();
                     break;
                 case 2:
-                    alterarConsulta();
-                    break;
-                case 3:
                     deletarConsulta();
                     break;
-                case 4:
+                case 3:
                     cancelarConsulta();
                     break;
-                case 5:
+                case 4:
                     remarcarConsulta();
                     break;
-                case 6:
+                case 5:
                     listarConsultas();
                     break;
-                case 7:
+                case 6:
                     listarConsultasPorMedico();
                     break;
-                case 8:
+                case 7:
                     listarConsultasPorStatus();
                     break;
                 case 0:
@@ -516,43 +512,6 @@ public class ClinicaView {
         }
     }
 
-    private void alterarConsulta() {
-        System.out.println("======================");
-        System.out.println("== Alterar Consulta ==");
-        System.out.println("======================");
-
-        try {
-            int id = lerInt("Id da Consulta");
-            int idPaciente = lerInt("Id do Paciente");
-            int idMedico = lerInt("Id do Médico");
-            LocalDateTime dataHora = lerDataHora("Data e Hora (dd/MM/yyyy HH:mm)");
-            StatusConsulta status = selecionarStatusConsulta();
-            double valor = lerDouble("Valor da Consulta");
-
-            controller.alterarConsulta(id, idPaciente, idMedico, dataHora, status, valor);
-            System.out.println("Consulta alterada com sucesso");
-
-        } catch (PacienteNaoEncontradoException e) {
-            System.out.println("== Paciente não encontrado: " + e.getMessage() + " ==");
-
-        } catch (MedicoNaoEncontradoException e) {
-            System.out.println("== Médico não encontrado: " + e.getMessage() + " ==");
-
-        } catch (DadosObrigatoriosException e) {
-            System.out.println("== Campo obrigatório não preenchido: " + e.getMessage() + " ==");
-
-        } catch (DataInvalidaException e) {
-            System.out.println("== Data inválida: " + e.getMessage() + " ==");
-
-        } catch (ValorInvalidoException e) {
-            System.out.println("== Valor inválido: " + e.getMessage() + " ==");
-
-        } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException e) {
-            System.err.println("Erro ao alterar consulta: " + e.getMessage());
-            System.out.println("== Erro ao alterar consulta. Contate o administrador. ==");
-        }
-    }
-
     private void deletarConsulta() {
         System.out.println("======================");
         System.out.println("== Deletar Consulta ==");
@@ -607,6 +566,9 @@ public class ClinicaView {
 
         } catch (ConsultaNaoEncontradaException e) {
             System.out.println("== Consulta não encontrada: " + e.getMessage() + " ==");
+
+        } catch (DataInvalidaException e) {
+            System.out.println(e.getMessage());
 
         } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException e) {
             System.err.println("Erro ao remarcar consulta: " + e.getMessage());

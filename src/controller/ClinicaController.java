@@ -103,20 +103,17 @@ public class ClinicaController {
         ConsultaDao.adicionarConsulta(consulta);
     }
 
-    public void alterarConsulta(int id, int idPaciente, int idMedico, LocalDateTime dataHora, StatusConsulta status, double valor) throws PacienteNaoEncontradoException, MedicoNaoEncontradoException, DadosObrigatoriosException, DataInvalidaException, ValorInvalidoException, ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException {
-        Paciente paciente = PacienteDao.buscarPacientePorId(idPaciente);
-        Medico medico = MedicoDao.buscarMedicoPorId(idMedico);
-        Consulta consulta = ConsultaFactory.criarConsulta(id, paciente, medico, dataHora, status, valor);
-        ConsultaDao.alterarConsulta(consulta);
-    }
-
     public void cancelarConsulta(int id) throws ConsultaNaoEncontradaException, ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException {
         Consulta consulta = ConsultaDao.buscarConsultaPorId(id);
         consulta.cancelar();
         ConsultaDao.alterarConsulta(consulta);
     }
 
-    public void remarcarConsulta(int id, LocalDateTime novaDataHora) throws ConsultaNaoEncontradaException, ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException {
+    public void remarcarConsulta(int id, LocalDateTime novaDataHora) throws ConsultaNaoEncontradaException, ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException, DataInvalidaException {
+        if (novaDataHora.isBefore(LocalDateTime.now())) {
+            throw new DataInvalidaException("Data da consulta não pode ser no passado");
+        }
+
         Consulta consulta = ConsultaDao.buscarConsultaPorId(id);
         consulta.remarcar(novaDataHora);
         ConsultaDao.alterarConsulta(consulta);

@@ -16,7 +16,7 @@ import model.Consulta;
 import model.StatusConsulta;
 
 public abstract class ConsultaDao {
-    private static final File CAMINHO = new File("projeto_clinica_medica/src/obj/consultas.ser");
+    private static final File CAMINHO = new File("src/obj/consultas.ser");
 
     public static void adicionarConsulta(Consulta consulta) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException {
         try {
