@@ -52,9 +52,9 @@ public abstract class ConsultaDao {
         } catch (ArquivoNaoEncontradoException e) {
             throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
         } catch (ErroAoLerArquivoException e) {
-            throw new ErroAoLerArquivoException("Erro ao carregar lista de pacientes");
+            throw new ErroAoLerArquivoException("Erro ao carregar lista de consultas");
         } catch (IOException e) {
-            throw new ErroAoSalvarException("Erro ao salvar alteração do paciente");
+            throw new ErroAoSalvarException("Erro ao salvar alteração da consulta");
         }
     }
 
@@ -70,9 +70,9 @@ public abstract class ConsultaDao {
         } catch (ArquivoNaoEncontradoException e) {
             throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
         } catch (ErroAoLerArquivoException e) {
-            throw new ErroAoLerArquivoException("Erro ao carregar lista de pacientes");
+            throw new ErroAoLerArquivoException("Erro ao carregar lista de consultas");
         } catch (IOException e) {
-            throw new ErroAoSalvarException("Erro ao deletar paciente");
+            throw new ErroAoSalvarException("Erro ao deletar consulta");
         }
     }
 
@@ -88,17 +88,7 @@ public abstract class ConsultaDao {
         } catch (ArquivoNaoEncontradoException e) {
             throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
         } catch (ErroAoLerArquivoException e) {
-            throw new ErroAoLerArquivoException("Erro ao carregar lista de pacientes");
-        }
-    }
-
-    public static List<Consulta> buscarPorPaciente(int idPaciente) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ClassNotFoundException {
-        try {
-            return listarConsultas().stream()
-                    .filter(c -> c.getPaciente().getId() == idPaciente)
-                    .toList();
-        } catch (Exception e) {
-            throw new ErroAoLerArquivoException("Erro ao buscar consultas do paciente");
+            throw new ErroAoLerArquivoException("Erro ao carregar lista de consultas");
         }
     }
 
@@ -107,8 +97,12 @@ public abstract class ConsultaDao {
             return listarConsultas().stream()
                     .filter(c -> c.getMedico().getId() == idMedico)
                     .toList();
-        } catch (Exception e) {
+        } catch (ArquivoNaoEncontradoException e) {
+            throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
+        } catch (ErroAoLerArquivoException e) {
             throw new ErroAoLerArquivoException("Erro ao buscar consultas do médico");
+        } catch (ClassNotFoundException e) {
+            throw new ClassNotFoundException("Erro ao deserializar consultas");
         }
     }
 
@@ -117,8 +111,12 @@ public abstract class ConsultaDao {
             return listarConsultas().stream()
                     .filter(c -> c.getStatus() == status)
                     .toList();
-        } catch (Exception e) {
+        } catch (ArquivoNaoEncontradoException e) {
+            throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
+        } catch (ErroAoLerArquivoException e) {
             throw new ErroAoLerArquivoException("Erro ao buscar consultas por status");
+        } catch (ClassNotFoundException e) {
+            throw new ClassNotFoundException("Erro ao deserializar consultas");
         }
     }
 

@@ -173,9 +173,8 @@ public class ClinicaView {
             System.out.println("[4] Cancelar Consulta");
             System.out.println("[5] Remarcar Consulta");
             System.out.println("[6] Listar Consultas");
-            System.out.println("[7] Listar Consultas por Paciente");
-            System.out.println("[8] Listar Consultas por Médico");
-            System.out.println("[9] Listar Consultas por Status");
+            System.out.println("[7] Listar Consultas por Médico");
+            System.out.println("[8] Listar Consultas por Status");
             System.out.println("[0] Voltar");
             System.out.println();
 
@@ -200,12 +199,9 @@ public class ClinicaView {
                     listarConsultas();
                     break;
                 case 7:
-                    listarConsultasPorPaciente();
-                    break;
-                case 8:
                     listarConsultasPorMedico();
                     break;
-                case 9:
+                case 8:
                     listarConsultasPorStatus();
                     break;
                 case 0:
@@ -491,10 +487,10 @@ public class ClinicaView {
         System.out.println("=======================");
 
         try {
-            int idPaciente         = lerInt("Id do Paciente");
-            int idMedico           = lerInt("Id do Médico");
+            int idPaciente = lerInt("Id do Paciente");
+            int idMedico = lerInt("Id do Médico");
             LocalDateTime dataHora = lerDataHora("Data e Hora (dd/MM/yyyy HH:mm)");
-            double valor           = lerDouble("Valor da Consulta");
+            double valor = lerDouble("Valor da Consulta");
 
             controller.agendarConsulta(idPaciente, idMedico, dataHora, valor);
             System.out.println("Consulta agendada com sucesso");
@@ -526,12 +522,12 @@ public class ClinicaView {
         System.out.println("======================");
 
         try {
-            int id                 = lerInt("Id da Consulta");
-            int idPaciente         = lerInt("Id do Paciente");
-            int idMedico           = lerInt("Id do Médico");
+            int id = lerInt("Id da Consulta");
+            int idPaciente = lerInt("Id do Paciente");
+            int idMedico = lerInt("Id do Médico");
             LocalDateTime dataHora = lerDataHora("Data e Hora (dd/MM/yyyy HH:mm)");
-            StatusConsulta status  = selecionarStatusConsulta();
-            double valor           = lerDouble("Valor da Consulta");
+            StatusConsulta status = selecionarStatusConsulta();
+            double valor = lerDouble("Valor da Consulta");
 
             controller.alterarConsulta(id, idPaciente, idMedico, dataHora, status, valor);
             System.out.println("Consulta alterada com sucesso");
@@ -603,7 +599,7 @@ public class ClinicaView {
         System.out.println("=======================");
 
         try {
-            int id                     = lerInt("Id da Consulta");
+            int id = lerInt("Id da Consulta");
             LocalDateTime novaDataHora = lerDataHora("Nova Data e Hora (dd/MM/yyyy HH:mm)");
 
             controller.remarcarConsulta(id, novaDataHora);
@@ -645,42 +641,14 @@ public class ClinicaView {
         }
     }
 
-    private void listarConsultasPorPaciente() {
-        System.out.println("================================");
-        System.out.println("== Consultas por Paciente ==");
-        System.out.println("================================");
-
-        try {
-            int idPaciente           = lerInt("Id do Paciente");
-            List<Consulta> consultas = controller.listarConsultasPorPaciente(idPaciente);
-
-            if (consultas.isEmpty()) {
-                System.out.println("Nenhuma consulta encontrada para esse paciente.");
-                return;
-            }
-            System.out.println("-------------------------------");
-            for (Consulta c : consultas) {
-                System.out.println(c.exibirResumo());
-                System.out.println("-------------------------------");
-            }
-
-        } catch (ArquivoNaoEncontradoException e) {
-            System.out.println("Nenhuma consulta cadastrada.");
-
-        } catch (ErroAoLerArquivoException | ClassNotFoundException e) {
-            System.err.println("Erro ao listar consultas por paciente: " + e.getMessage());
-            System.out.println("== Erro ao carregar consultas. Contate o administrador. ==");
-        }
-    }
-
     private void listarConsultasPorMedico() {
         System.out.println("==============================");
         System.out.println("== Consultas por Médico ==");
         System.out.println("==============================");
 
         try {
-            int idMedico             = lerInt("Id do Médico");
-            List<Consulta> consultas = controller.listarConsultasPorMedico(idMedico);
+            int idMedico = lerInt("Id do Médico");
+            List<Consulta> consultas = controller.listarConsultas(idMedico);
 
             if (consultas.isEmpty()) {
                 System.out.println("Nenhuma consulta encontrada para esse médico.");
@@ -707,8 +675,8 @@ public class ClinicaView {
         System.out.println("==============================");
 
         try {
-            StatusConsulta status    = selecionarStatusConsulta();
-            List<Consulta> consultas = controller.listarConsultasPorStatus(status);
+            StatusConsulta status = selecionarStatusConsulta();
+            List<Consulta> consultas = controller.listarConsultas(status);
 
             if (consultas.isEmpty()) {
                 System.out.println("Nenhuma consulta encontrada com esse status.");
@@ -797,13 +765,13 @@ public class ClinicaView {
             if (opcao >= 1 && opcao <= tipos.length) {
                 return tipos[opcao - 1];
             }
-            System.out.println("  Opção inválida. Tente novamente.");
+            System.out.println("Opção inválida. Tente novamente.");
         }
     }    
 
     private Especialidade selecionarEspecialidade() {
         Especialidade[] especialidades = Especialidade.values();
-        System.out.println("  Especialidade:");
+        System.out.println("Especialidade:");
         for (int i = 0; i < especialidades.length; i++) {
             System.out.println("  [" + (i + 1) + "] " + especialidades[i].getEspecialidade());
         }
@@ -818,7 +786,7 @@ public class ClinicaView {
 
     private StatusConsulta selecionarStatusConsulta() {
         StatusConsulta[] statuses = StatusConsulta.values();
-        System.out.println("  Status:");
+        System.out.println("Status:");
         for (int i = 0; i < statuses.length; i++) {
             System.out.println("  [" + (i + 1) + "] " + statuses[i].getStatus());
         }
@@ -827,7 +795,7 @@ public class ClinicaView {
             if (opcao >= 1 && opcao <= statuses.length) {
                 return statuses[opcao - 1];
             }
-            System.out.println("  Opção inválida. Tente novamente.");
+            System.out.println("Opção inválida. Tente novamente.");
         }
     }
 }

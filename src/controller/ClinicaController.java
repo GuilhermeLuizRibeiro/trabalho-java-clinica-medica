@@ -130,20 +130,16 @@ public class ClinicaController {
         return ConsultaDao.listarConsultas();
     }
 
-    public Consulta buscarConsultaPorId(int id) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ConsultaNaoEncontradaException {
-        return ConsultaDao.buscarConsultaPorId(id);
-    }
-
-    public List<Consulta> listarConsultasPorPaciente(int idPaciente) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ClassNotFoundException {
-        return ConsultaDao.buscarPorPaciente(idPaciente);
-    }
-
-    public List<Consulta> listarConsultasPorMedico(int idMedico) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ClassNotFoundException {
+    public List<Consulta> listarConsultas(int idMedico) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ClassNotFoundException {
         return ConsultaDao.buscarPorMedico(idMedico);
     }
 
-    public List<Consulta> listarConsultasPorStatus(StatusConsulta status) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ClassNotFoundException {
+    public List<Consulta> listarConsultas(StatusConsulta status) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ClassNotFoundException {
         return ConsultaDao.buscarPorStatus(status);
+    }
+
+    public Consulta buscarConsultaPorId(int id) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ConsultaNaoEncontradaException {
+        return ConsultaDao.buscarConsultaPorId(id);
     }
 
     private int gerarIdConsulta() throws ErroAoLerArquivoException, ClassNotFoundException {

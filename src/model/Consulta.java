@@ -91,10 +91,7 @@ public class Consulta implements Agendavel, Serializable {
 
     @Override
     public boolean estaAtivo() {
-        if (!status.getStatus().equals("Agendada") || !status.getStatus().equals("Remarcada")) {
-            return false;
-        }
-        return true;
+        return (status == StatusConsulta.AGENDADA || status == StatusConsulta.REMARCADA);
     }
 
     @Override

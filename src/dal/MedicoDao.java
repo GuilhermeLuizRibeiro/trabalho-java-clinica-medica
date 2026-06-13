@@ -52,9 +52,9 @@ public abstract class MedicoDao {
         } catch (ArquivoNaoEncontradoException e) {
             throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
         } catch (ErroAoLerArquivoException e) {
-            throw new ErroAoLerArquivoException("Erro ao carregar lista de pacientes");
+            throw new ErroAoLerArquivoException("Erro ao carregar lista de médicos");
         } catch (IOException e) {
-            throw new ErroAoSalvarException("Erro ao salvar alteração do paciente");
+            throw new ErroAoSalvarException("Erro ao salvar alteração do médico");
         }
     }
 
@@ -70,9 +70,9 @@ public abstract class MedicoDao {
         } catch (ArquivoNaoEncontradoException e) {
             throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
         } catch (ErroAoLerArquivoException e) {
-            throw new ErroAoLerArquivoException("Erro ao carregar lista de pacientes");
+            throw new ErroAoLerArquivoException("Erro ao carregar lista de médicos");
         } catch (IOException e) {
-            throw new ErroAoSalvarException("Erro ao deletar paciente");
+            throw new ErroAoSalvarException("Erro ao deletar médico");
         }
     }
 
@@ -88,7 +88,7 @@ public abstract class MedicoDao {
         } catch (ArquivoNaoEncontradoException e) {
             throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
         } catch (ErroAoLerArquivoException e) {
-            throw new ErroAoLerArquivoException("Erro ao carregar lista de pacientes");
+            throw new ErroAoLerArquivoException("Erro ao carregar lista de médicos");
         }
     }
 
@@ -101,7 +101,7 @@ public abstract class MedicoDao {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(CAMINHO));
             return (List<Medico>) ois.readObject();
         } catch (IOException e) {
-            throw new ErroAoLerArquivoException("Erro ao listar medicos");
+            throw new ErroAoLerArquivoException("Erro ao listar médicos");
         } catch (ClassNotFoundException e) {
             throw new ClassNotFoundException("Erro ao deserializar médicos");
         }
