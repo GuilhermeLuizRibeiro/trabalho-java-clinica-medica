@@ -6,6 +6,7 @@ import dal.PacienteDao;
 import exception.ArquivoNaoEncontradoException;
 import exception.ConsultaNaoCancelavelException;
 import exception.ConsultaNaoEncontradaException;
+import exception.ConsultaNaoFinalizavelException;
 import exception.ConsultaNaoRemarcavelException;
 import exception.CpfInvalidoException;
 import exception.CrmInvalidoException;
@@ -13,6 +14,7 @@ import exception.DadosObrigatoriosException;
 import exception.DataInvalidaException;
 import exception.ErroAoLerArquivoException;
 import exception.ErroAoSalvarException;
+import exception.MedicoIndisponivelException;
 import exception.MedicoNaoEncontradoException;
 import exception.OperacaoNaoPermitidaException;
 import exception.PacienteNaoEncontradoException;
@@ -31,12 +33,16 @@ import model.StatusConsulta;
 import model.TipoSanguineo;
 
 public class ClinicaController {
-    public void cadastrarPaciente(TipoSanguineo tipoSanguineo, String convenio, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) throws DadosObrigatoriosException, CpfInvalidoException, DataInvalidaException, ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException {
+    public void cadastrarPaciente(TipoSanguineo tipoSanguineo, String convenio, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) throws DadosObrigatoriosException, CpfInvalidoException, DataInvalidaException, ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException, ValorInvalidoException {
+        if (PacienteDao.existePorCpf(cpf)) {
+            throw new CpfInvalidoException("CPF já cadastrado");
+        }
+
         Paciente paciente = PacienteFactory.criarPaciente(tipoSanguineo, convenio, gerarIdPaciente(), nome, cpf, telefone, email, dataNascimento);
         PacienteDao.adicionarPaciente(paciente);
     }
 
-    public void alterarPaciente(int id, TipoSanguineo tipoSanguineo, String convenio, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) throws DadosObrigatoriosException, CpfInvalidoException, DataInvalidaException, ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException, PacienteNaoEncontradoException {
+    public void alterarPaciente(int id, TipoSanguineo tipoSanguineo, String convenio, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) throws DadosObrigatoriosException, CpfInvalidoException, DataInvalidaException, ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException, PacienteNaoEncontradoException, ValorInvalidoException {
         Paciente paciente = PacienteFactory.criarPaciente(tipoSanguineo, convenio, id, nome, cpf, telefone, email, dataNascimento);
         PacienteDao.alterarPaciente(paciente);
     }
@@ -74,6 +80,13 @@ public class ClinicaController {
     }
 
     public void cadastrarMedico(String crm, Especialidade especialidade, double salario, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) throws DadosObrigatoriosException, CpfInvalidoException, CrmInvalidoException, ValorInvalidoException, DataInvalidaException, ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException {
+        if (MedicoDao.existePorCpf(cpf)) {
+            throw new CpfInvalidoException("CPF já cadastrado");
+        }
+        if (MedicoDao.existePorCrm(crm)) {
+            throw new CrmInvalidoException("CRM já cadastrado");
+        }
+
         Medico medico = MedicoFactory.criarMedico(crm, especialidade, salario, gerarIdMedico(), nome, cpf, telefone, email, dataNascimento);
         MedicoDao.adicionarMedico(medico);
     }
@@ -115,9 +128,18 @@ public class ClinicaController {
         }
     }
 
-    public void agendarConsulta(int idPaciente, int idMedico, LocalDateTime dataHora, double valor) throws PacienteNaoEncontradoException, MedicoNaoEncontradoException, DadosObrigatoriosException, DataInvalidaException, ValorInvalidoException, ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException {
+    public void agendarConsulta(int idPaciente, int idMedico, LocalDateTime dataHora, double valor) throws PacienteNaoEncontradoException, MedicoNaoEncontradoException, DadosObrigatoriosException, DataInvalidaException, ValorInvalidoException, ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException, MedicoIndisponivelException {
         Paciente paciente = PacienteDao.buscarPacientePorId(idPaciente);
         Medico medico = MedicoDao.buscarMedicoPorId(idMedico);
+
+        boolean medicoOcupado = ConsultaDao.buscarPorMedico(idMedico).stream()
+            .filter(Consulta::estaAtivo)
+            .anyMatch(c -> c.getDataHora().equals(dataHora));
+
+        if (medicoOcupado) {
+            throw new MedicoIndisponivelException("Médico já possui consulta agendada nesse horário");
+        }
+
         Consulta consulta = ConsultaFactory.criarConsulta(gerarIdConsulta(), paciente, medico, dataHora, valor);
         ConsultaDao.adicionarConsulta(consulta);
     }
@@ -133,7 +155,7 @@ public class ClinicaController {
         ConsultaDao.alterarConsulta(consulta);
     }
 
-    public void remarcarConsulta(int id, LocalDateTime novaDataHora) throws ConsultaNaoEncontradaException, ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException, DataInvalidaException, ConsultaNaoRemarcavelException {
+    public void remarcarConsulta(int id, LocalDateTime novaDataHora) throws ConsultaNaoEncontradaException, ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException, DataInvalidaException, ConsultaNaoRemarcavelException, MedicoIndisponivelException {
         if (novaDataHora.isBefore(LocalDateTime.now())) {
             throw new DataInvalidaException("Data da consulta não pode ser no passado");
         }
@@ -144,7 +166,27 @@ public class ClinicaController {
             throw new ConsultaNaoRemarcavelException("Consulta não pode ser remarcada");
         }
 
+        boolean medicoOcupado = ConsultaDao.buscarPorMedico(consulta.getMedico().getId()).stream()
+            .filter(Consulta::estaAtivo)
+            .filter(c -> c.getId() != consulta.getId())
+            .anyMatch(c -> c.getDataHora().equals(novaDataHora));
+
+        if (medicoOcupado) {
+            throw new MedicoIndisponivelException("Médico já possui consulta nesse horário");
+        }
+
         consulta.remarcar(novaDataHora);
+        ConsultaDao.alterarConsulta(consulta);
+    }
+
+    public void finalizarConsulta(int id) throws ConsultaNaoEncontradaException, ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException, ConsultaNaoFinalizavelException {
+        Consulta consulta = ConsultaDao.buscarConsultaPorId(id);
+
+        if (!consulta.estaAtivo()) {
+            throw new ConsultaNaoFinalizavelException("Consulta já foi finalizada ou cancelada");
+        }
+
+        consulta.finalizar();
         ConsultaDao.alterarConsulta(consulta);
     }
 

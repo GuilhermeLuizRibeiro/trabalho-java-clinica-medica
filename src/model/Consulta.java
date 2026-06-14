@@ -21,15 +21,6 @@ public class Consulta implements Agendavel, Serializable {
         this.valor = valor;
     }
 
-    public Consulta(int id, Paciente paciente, Medico medico, LocalDateTime dataHora, StatusConsulta status, double valor) {
-        this.id = id;
-        this.paciente = paciente;
-        this.medico = medico;
-        this.dataHora = dataHora;
-        this.status = status;
-        this.valor = valor;
-    }
-
     public int getId() {
         return id;
     }
@@ -97,5 +88,10 @@ public class Consulta implements Agendavel, Serializable {
     public void remarcar(LocalDateTime novaDataHora) {
         this.dataHora = novaDataHora;
         this.status = StatusConsulta.REMARCADA;
+    }
+
+    @Override
+    public void finalizar() {
+        this.status = StatusConsulta.REALIZADA;
     }
 }

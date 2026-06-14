@@ -24,6 +24,11 @@ public abstract class MedicoFactory {
         if (especialidade == null) {
             throw new DadosObrigatoriosException("Especialidade é obrigatória");
         }
+        if (telefone != null && !telefone.isBlank()) {
+            if (!telefone.matches("[0-9()\\-\\s]+")) {
+                throw new ValorInvalidoException("Telefone inválido");
+            }
+        }
         if (dataNascimento == null) {
             throw new DadosObrigatoriosException("Data de nascimento é obrigatória");
         }
@@ -35,6 +40,11 @@ public abstract class MedicoFactory {
         }
         if (salario < 0) {
             throw new ValorInvalidoException("Salário não pode ser negativo");
+        }
+        if (email != null && !email.isBlank()) {
+            if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+                throw new DadosObrigatoriosException("Email inválido");
+            }
         }
         if (dataNascimento.isAfter(LocalDate.now())) {
             throw new DataInvalidaException("Data de nascimento não pode ser no futuro");

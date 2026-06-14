@@ -100,4 +100,13 @@ public abstract class PacienteDao {
             throw new ErroAoLerArquivoException("Erro ao deserializar pacientes: classe não encontrada");
         }
     }
+
+    public static boolean existePorCpf(String cpf) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException {
+        try {
+            return listarPacientes().stream()
+                .anyMatch(p -> p.getCpf().equals(cpf));
+        } catch (ArquivoNaoEncontradoException e) {
+            return false;
+        }
+    }
 }

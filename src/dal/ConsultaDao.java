@@ -86,17 +86,18 @@ public abstract class ConsultaDao {
                 .orElseThrow(() -> new ConsultaNaoEncontradaException("Consulta não encontrada"));
     }
 
-    public static List<Consulta> buscarPorMedico(int idMedico)
-            throws ArquivoNaoEncontradoException, ErroAoLerArquivoException {
-
-        return listarConsultas().stream()
+    public static List<Consulta> buscarPorMedico(int idMedico) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException {
+        try {
+            return listarConsultas().stream()
                 .filter(c -> c.getMedico().getId() == idMedico)
                 .toList();
+        } catch (ArquivoNaoEncontradoException e) {
+            return new ArrayList<>();
+        }
+        
     }
 
-    public static List<Consulta> buscarPorStatus(StatusConsulta status)
-            throws ArquivoNaoEncontradoException, ErroAoLerArquivoException {
-
+    public static List<Consulta> buscarPorStatus(StatusConsulta status)throws ArquivoNaoEncontradoException, ErroAoLerArquivoException {
         return listarConsultas().stream()
                 .filter(c -> c.getStatus() == status)
                 .toList();

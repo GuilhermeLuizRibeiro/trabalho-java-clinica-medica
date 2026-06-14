@@ -3,12 +3,13 @@ package factory;
 import exception.CpfInvalidoException;
 import exception.DadosObrigatoriosException;
 import exception.DataInvalidaException;
+import exception.ValorInvalidoException;
 import java.time.LocalDate;
 import model.Paciente;
 import model.TipoSanguineo;
 
 public abstract class PacienteFactory {
-    public static Paciente criarPaciente(TipoSanguineo tipoSanguineo, String convenio, int id, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) throws DadosObrigatoriosException, CpfInvalidoException, DataInvalidaException {
+    public static Paciente criarPaciente(TipoSanguineo tipoSanguineo, String convenio, int id, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) throws DadosObrigatoriosException, CpfInvalidoException, DataInvalidaException, ValorInvalidoException {
 
         if (nome == null || nome.isBlank()) {
             throw new DadosObrigatoriosException("Nome é obrigatório");
@@ -16,8 +17,10 @@ public abstract class PacienteFactory {
         if (cpf == null || cpf.isBlank()) {
             throw new DadosObrigatoriosException("CPF é obrigatório");
         }
-        if (telefone == null || telefone.isBlank()) {
-            throw new DadosObrigatoriosException("Telefone é obrigatório");
+        if (telefone != null && !telefone.isBlank()) {
+            if (!telefone.matches("[0-9()\\-\\s]+")) {
+                throw new ValorInvalidoException("Telefone inválido");
+            }
         }
         if (tipoSanguineo == null) {
             throw new DadosObrigatoriosException("Tipo sanguíneo é obrigatório");
@@ -27,6 +30,11 @@ public abstract class PacienteFactory {
         }
         if (!validarCpf(cpf)) {
             throw new CpfInvalidoException("CPF inválido");
+        }
+        if (email != null && !email.isBlank()) {
+            if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+                throw new DadosObrigatoriosException("Email inválido");
+            }
         }
         if (dataNascimento.isAfter(LocalDate.now())) {
             throw new DataInvalidaException("Data de nascimento não pode ser no futuro");

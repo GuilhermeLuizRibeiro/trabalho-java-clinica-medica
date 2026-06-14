@@ -100,4 +100,22 @@ public abstract class MedicoDao {
             throw new ErroAoLerArquivoException("Erro ao deserializar médicos: classe não encontrada");
         }
     }
+
+    public static boolean existePorCpf(String cpf) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException {
+        try {
+            return listarMedicos().stream()
+                .anyMatch(m -> m.getCpf().equals(cpf));
+        } catch (ArquivoNaoEncontradoException e) {
+            return false;
+        }
+    }
+
+    public static boolean existePorCrm(String crm) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException {
+        try {
+            return listarMedicos().stream()
+                .anyMatch(m -> m.getCrm().equalsIgnoreCase(crm));
+        } catch (ArquivoNaoEncontradoException e) {
+            return false;
+        }
+    }
 }
