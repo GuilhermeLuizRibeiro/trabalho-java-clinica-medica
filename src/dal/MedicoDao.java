@@ -20,90 +20,84 @@ public abstract class MedicoDao {
     public static void adicionarMedico(Medico medico) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException {
         try {
             CAMINHO.getParentFile().mkdirs();
+
             List<Medico> medicos = new ArrayList<>();
+
             if (CAMINHO.exists()) {
                 medicos = listarMedicos();
             }
+
             medicos.add(medico);
+
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(CAMINHO));
             oos.writeObject(medicos);
             oos.close();
         } catch (IOException e) {
-            throw new ErroAoSalvarException("Erro ao salvar medico");
-        } catch (ErroAoLerArquivoException e) {
-            throw new ErroAoLerArquivoException("Erro ao carregar lista de medicos");
-        } catch (ArquivoNaoEncontradoException e) {
-            throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
-        } catch (ClassNotFoundException e) {
-            throw new ErroAoLerArquivoException("Erro ao deserializar médicos");
+            throw new ErroAoSalvarException("Erro ao salvar médico");
         }
     }
 
-    public static void alterarMedico(Medico medico) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException {
+    public static void alterarMedico(Medico medico) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException, MedicoNaoEncontradoException {
         try {
             List<Medico> medicos = listarMedicos();
+
+            boolean existe = medicos.stream()
+                .anyMatch(m -> m.getId() == medico.getId());
+            if (!existe) {
+                throw new MedicoNaoEncontradoException("Médico não encontrado");
+            }
+
             medicos.replaceAll(m -> m.getId() == medico.getId() ? medico : m);
+
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(CAMINHO));
             oos.writeObject(medicos);
             oos.close();
-
-        } catch (ClassNotFoundException e) {
-            throw new ErroAoLerArquivoException("Erro ao deserializar médicos");
-        } catch (ArquivoNaoEncontradoException e) {
-            throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
-        } catch (ErroAoLerArquivoException e) {
-            throw new ErroAoLerArquivoException("Erro ao carregar lista de médicos");
         } catch (IOException e) {
             throw new ErroAoSalvarException("Erro ao salvar alteração do médico");
         }
     }
 
-    public static void deletarMedico(int id) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException {
+    public static void deletarMedico(int id) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ErroAoSalvarException, MedicoNaoEncontradoException {
         try {
             List<Medico> medicos = listarMedicos();
+
+            boolean existe = medicos.stream()
+                .anyMatch(m -> m.getId() == id);
+            if (!existe) {
+                throw new MedicoNaoEncontradoException("Médico não encontrado");
+            }
+
             medicos.removeIf(m -> m.getId() == id);
+
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(CAMINHO));
             oos.writeObject(medicos);
             oos.close();
-        } catch (ClassNotFoundException e) {
-            throw new ErroAoLerArquivoException("Erro ao deserializar médicos");
-        } catch (ArquivoNaoEncontradoException e) {
-            throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
-        } catch (ErroAoLerArquivoException e) {
-            throw new ErroAoLerArquivoException("Erro ao carregar lista de médicos");
         } catch (IOException e) {
             throw new ErroAoSalvarException("Erro ao deletar médico");
         }
     }
 
     public static Medico buscarMedicoPorId(int id) throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, MedicoNaoEncontradoException {
-        try {
-            List<Medico> medicos = listarMedicos();
-            return medicos.stream()
-                    .filter(m -> m.getId() == id)
-                    .findFirst()
-                    .orElseThrow(() -> new MedicoNaoEncontradoException("Medico não encontrado"));
-        } catch (ClassNotFoundException e) {
-            throw new ErroAoLerArquivoException("Erro ao deserializar médicos");
-        } catch (ArquivoNaoEncontradoException e) {
-            throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
-        } catch (ErroAoLerArquivoException e) {
-            throw new ErroAoLerArquivoException("Erro ao carregar lista de médicos");
-        }
+        List<Medico> medicos = listarMedicos();
+        return medicos.stream()
+                .filter(m -> m.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new MedicoNaoEncontradoException("Médico não encontrado"));
     }
 
     @SuppressWarnings("unchecked")
-    public static List<Medico> listarMedicos() throws ArquivoNaoEncontradoException, ErroAoLerArquivoException, ClassNotFoundException {
+    public static List<Medico> listarMedicos() throws ArquivoNaoEncontradoException, ErroAoLerArquivoException {
         try {
             if (!CAMINHO.exists() || !CAMINHO.isFile()) {
-                throw new ArquivoNaoEncontradoException("Arquivo não encontrado");
+                throw new ArquivoNaoEncontradoException("Arquivo de médicos não encontrado");
             }
+
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(CAMINHO));
             return (List<Medico>) ois.readObject();
         } catch (IOException e) {
-            throw new ErroAoLerArquivoException("Erro ao listar médicos");
+            throw new ErroAoLerArquivoException("Erro ao ler o arquivo de médicos");
         } catch (ClassNotFoundException e) {
-            throw new ClassNotFoundException("Erro ao deserializar médicos");
+            throw new ErroAoLerArquivoException("Erro ao deserializar médicos: classe não encontrada");
         }
     }
 }

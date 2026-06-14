@@ -10,7 +10,7 @@ import model.Especialidade;
 import model.Medico;
 
 public abstract class MedicoFactory {
-    public static Medico criarMedico(String crm, Especialidade especialidade, double salarioBase, int id, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) throws DadosObrigatoriosException, CpfInvalidoException, CrmInvalidoException, ValorInvalidoException, DataInvalidaException {
+    public static Medico criarMedico(String crm, Especialidade especialidade, double salario, int id, String nome, String cpf, String telefone, String email, LocalDate dataNascimento) throws DadosObrigatoriosException, CpfInvalidoException, CrmInvalidoException, ValorInvalidoException, DataInvalidaException {
 
         if (nome == null || nome.isBlank()) {
             throw new DadosObrigatoriosException("Nome é obrigatório");
@@ -27,20 +27,51 @@ public abstract class MedicoFactory {
         if (dataNascimento == null) {
             throw new DadosObrigatoriosException("Data de nascimento é obrigatória");
         }
-        String cpfNumeros = cpf.replaceAll("[^0-9]", "");
-        if (cpfNumeros.length() != 11) {
-            throw new CpfInvalidoException("CPF deve conter 11 dígitos");
+        if (!validarCpf(cpf)) {
+            throw new CpfInvalidoException("CPF inválido");
         }
         if (!crm.matches("CRM/[A-Z]{2} \\d{4,6}")) {
-            throw new CrmInvalidoException("CRM inválido, formato esperado: CRM/UF 123456");
+            throw new CrmInvalidoException("Formato esperado: CRM/UF 123456");
         }
-        if (salarioBase < 0) {
-            throw new ValorInvalidoException("Salário base não pode ser negativo");
+        if (salario < 0) {
+            throw new ValorInvalidoException("Salário não pode ser negativo");
         }
         if (dataNascimento.isAfter(LocalDate.now())) {
             throw new DataInvalidaException("Data de nascimento não pode ser no futuro");
         }
         
-        return new Medico(crm, especialidade, salarioBase, id, nome, cpf, telefone, email, dataNascimento);
+        return new Medico(crm, especialidade, salario, id, nome, cpf, telefone, email, dataNascimento);
+    }
+
+    private static boolean validarCpf(String cpf) {
+        String cpfNumeros = cpf.replaceAll("[^0-9]", "");
+
+        if (cpfNumeros.length() != 11) {
+            return false;
+        }
+
+        if (cpfNumeros.matches("(\\d)\\1{10}")) {
+            return false;
+        }
+
+        int soma = 0;
+
+        for (int i = 0; i < 9; i++) {
+            soma += Character.getNumericValue(cpfNumeros.charAt(i)) * (10 - i);
+        }
+
+        int resto = soma % 11;
+        int digito1 = (resto < 2) ? 0 : 11 - resto;
+
+        soma = 0;
+
+        for (int i = 0; i < 10; i++) {
+            soma += Character.getNumericValue(cpfNumeros.charAt(i)) * (11 - i);
+        }
+
+        resto = soma % 11;
+        int digito2 = (resto < 2) ? 0 : 11 - resto;
+
+        return digito1 == Character.getNumericValue(cpfNumeros.charAt(9)) && digito2 == Character.getNumericValue(cpfNumeros.charAt(10));
     }
 }

@@ -1,1 +1,2 @@
 [ERRO] 13/06/2026 17:01:45 | Nenhum paciente cadastrado.
+[ERRO] 13/06/2026 23:37:53 | Erro ao listar consultas: Arquivo de consultas não encontrado

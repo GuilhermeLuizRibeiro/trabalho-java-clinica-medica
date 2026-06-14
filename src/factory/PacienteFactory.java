@@ -25,14 +25,45 @@ public abstract class PacienteFactory {
         if (dataNascimento == null) {
             throw new DadosObrigatoriosException("Data de nascimento é obrigatória");
         }
-        String cpfNumeros = cpf.replaceAll("[^0-9]", "");
-        if (cpfNumeros.length() != 11) {
-            throw new CpfInvalidoException("CPF deve conter 11 dígitos");
+        if (!validarCpf(cpf)) {
+            throw new CpfInvalidoException("CPF inválido");
         }
         if (dataNascimento.isAfter(LocalDate.now())) {
             throw new DataInvalidaException("Data de nascimento não pode ser no futuro");
         }
 
         return new Paciente(tipoSanguineo, convenio, id, nome, cpf, telefone, email, dataNascimento);
+    }
+
+    private static boolean validarCpf(String cpf) {
+        String cpfNumeros = cpf.replaceAll("[^0-9]", "");
+
+        if (cpfNumeros.length() != 11) {
+            return false;
+        }
+
+        if (cpfNumeros.matches("(\\d)\\1{10}")) {
+            return false;
+        }
+
+        int soma = 0;
+
+        for (int i = 0; i < 9; i++) {
+            soma += Character.getNumericValue(cpfNumeros.charAt(i)) * (10 - i);
+        }
+
+        int resto = soma % 11;
+        int digito1 = (resto < 2) ? 0 : 11 - resto;
+
+        soma = 0;
+
+        for (int i = 0; i < 10; i++) {
+            soma += Character.getNumericValue(cpfNumeros.charAt(i)) * (11 - i);
+        }
+
+        resto = soma % 11;
+        int digito2 = (resto < 2) ? 0 : 11 - resto;
+
+        return digito1 == Character.getNumericValue(cpfNumeros.charAt(9)) && digito2 == Character.getNumericValue(cpfNumeros.charAt(10));
     }
 }

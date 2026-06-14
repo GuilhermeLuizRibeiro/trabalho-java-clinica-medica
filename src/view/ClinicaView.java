@@ -2,7 +2,9 @@ package view;
 
 import controller.ClinicaController;
 import exception.ArquivoNaoEncontradoException;
+import exception.ConsultaNaoCancelavelException;
 import exception.ConsultaNaoEncontradaException;
+import exception.ConsultaNaoRemarcavelException;
 import exception.CpfInvalidoException;
 import exception.CrmInvalidoException;
 import exception.DadosObrigatoriosException;
@@ -10,6 +12,7 @@ import exception.DataInvalidaException;
 import exception.ErroAoLerArquivoException;
 import exception.ErroAoSalvarException;
 import exception.MedicoNaoEncontradoException;
+import exception.OperacaoNaoPermitidaException;
 import exception.PacienteNaoEncontradoException;
 import exception.ValorInvalidoException;
 import java.time.LocalDate;
@@ -229,15 +232,13 @@ public class ClinicaView {
             
         } catch (DadosObrigatoriosException e) {
             System.out.println("== Campo obrigatório não preenchido: " + e.getMessage() + " ==");
-
         } catch (CpfInvalidoException e) {
-            System.out.println("== CPF inválido: " + e.getMessage() + " ==");
-
+            System.out.println("== " + e.getMessage() + " ==");
         } catch (DataInvalidaException e) {
             System.out.println("== Data inválida: " + e.getMessage() + " ==");
-
-        } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException | ClassNotFoundException e) {
+        } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException e) {
             System.err.println("Erro ao cadastrar paciente: " + e.getMessage());
+            System.out.println("== Erro ao cadastrar paciente. Contate o administrador. ==");
         }
     }
 
@@ -261,15 +262,15 @@ public class ClinicaView {
 
         } catch (DadosObrigatoriosException e) {
             System.out.println("== Campo obrigatório não preenchido: " + e.getMessage() + " ==");
-
         } catch (CpfInvalidoException e) {
             System.out.println("== CPF inválido: " + e.getMessage() + " ==");
-
         } catch (DataInvalidaException e) {
             System.out.println("== Data inválida: " + e.getMessage() + " ==");
-
-        } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException | ClassNotFoundException e) {
+        } catch (PacienteNaoEncontradoException e) {
+            System.out.println("== " + e.getMessage() + " ==");
+        } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException e) {
             System.err.println("Erro ao alterar paciente: " + e.getMessage());
+            System.out.println("== Erro ao alterar paciente. Contate o administrador. ==");
         }
     }
 
@@ -284,8 +285,13 @@ public class ClinicaView {
             controller.deletarPaciente(id);
             System.out.println("Paciente deletado com sucesso");
 
+        } catch (OperacaoNaoPermitidaException e) {
+            System.out.println("== Erro ao deletar paciente: " + e.getMessage() + " ==");
+        } catch (PacienteNaoEncontradoException e) {
+            System.out.println("== " + e.getMessage() + " ==");
         } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException e) {
             System.err.println("Erro ao deletar paciente: " + e.getMessage());
+            System.out.println("== Erro ao deletar paciente. Contate o administrador. ==");
         }
     }
 
@@ -307,11 +313,9 @@ public class ClinicaView {
             }
             System.out.println("-------------------------------");
 
-        } catch (ArquivoNaoEncontradoException e) {
-            System.err.println("Nenhum paciente cadastrado.");
-
-        } catch (ErroAoLerArquivoException | ClassNotFoundException e) {
+        } catch (ErroAoLerArquivoException | ArquivoNaoEncontradoException e) {
             System.err.println("Erro ao listar pacientes: " + e.getMessage());
+            System.out.println("== Erro ao listar pacientes. Contate o administrador. ==");
         }
     }
 
@@ -327,10 +331,10 @@ public class ClinicaView {
             System.out.println(p.exibirResumo());
 
         } catch (PacienteNaoEncontradoException e) {
-            System.out.println("Paciente não encontrado: " + e.getMessage() + " ==");
-
+            System.out.println("== " + e.getMessage() + " ==");
         } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException e) {
             System.err.println("Erro ao buscar paciente: " + e.getMessage());
+            System.out.println("== Erro ao buscar paciente. Contate o administrador. ==");
         }
     }
 
@@ -354,20 +358,15 @@ public class ClinicaView {
     
         } catch (DadosObrigatoriosException e) {
             System.out.println("== Campo obrigatório não preenchido: " + e.getMessage() + " ==");
-    
         } catch (CpfInvalidoException e) {
             System.out.println("== CPF inválido: " + e.getMessage() + " ==");
-    
         } catch (CrmInvalidoException e) {
             System.out.println("== CRM inválido: " + e.getMessage() + " ==");
-    
         } catch (ValorInvalidoException e) {
             System.out.println("== Salário inválido: " + e.getMessage() + " ==");
-    
         } catch (DataInvalidaException e) {
             System.out.println("== Data inválida: " + e.getMessage() + " ==");
-    
-        } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException | ClassNotFoundException e) {
+        } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException e) {
             System.err.println("Erro ao cadastrar médico: " + e.getMessage());
             System.out.println("== Erro ao cadastrar médico. Contate o administrador. ==");
         }
@@ -394,20 +393,17 @@ public class ClinicaView {
     
         } catch (DadosObrigatoriosException e) {
             System.out.println("== Campo obrigatório não preenchido: " + e.getMessage() + " ==");
-    
         } catch (CpfInvalidoException e) {
             System.out.println("== CPF inválido: " + e.getMessage() + " ==");
-    
         } catch (CrmInvalidoException e) {
             System.out.println("== CRM inválido: " + e.getMessage() + " ==");
-    
+        } catch (MedicoNaoEncontradoException e) {
+            System.out.println("== " + e.getMessage() + " ==");
         } catch (ValorInvalidoException e) {
             System.out.println("== Salário inválido: " + e.getMessage() + " ==");
-    
         } catch (DataInvalidaException e) {
             System.out.println("== Data inválida: " + e.getMessage() + " ==");
-    
-        } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException | ClassNotFoundException e) {
+        } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException e) {
             System.err.println("Erro ao alterar médico: " + e.getMessage());
             System.out.println("== Erro ao alterar médico. Contate o administrador. ==");
         }
@@ -424,6 +420,10 @@ public class ClinicaView {
             controller.deletarMedico(id);
             System.out.println("Médico deletado com sucesso");
     
+        } catch (OperacaoNaoPermitidaException e) {
+            System.out.println("== Erro ao deletar médico: " + e.getMessage() + " ==");
+        } catch (MedicoNaoEncontradoException e) {
+            System.out.println("== " + e.getMessage() + " ==");
         } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException e) {
             System.err.println("Erro ao deletar médico: " + e.getMessage());
             System.out.println("== Erro ao deletar médico. Contate o administrador. ==");
@@ -447,11 +447,8 @@ public class ClinicaView {
                 System.out.println(m.exibirResumo());
             }
             System.out.println("-------------------------------");
-    
-        } catch (ArquivoNaoEncontradoException e) {
-            System.out.println("Nenhum médico cadastrado.");
-    
-        } catch (ErroAoLerArquivoException | ClassNotFoundException e) {
+            
+        } catch (ErroAoLerArquivoException | ArquivoNaoEncontradoException e) {
             System.err.println("Erro ao listar médicos: " + e.getMessage());
             System.out.println("== Erro ao carregar lista de médicos. Contate o administrador. ==");
         }
@@ -470,7 +467,6 @@ public class ClinicaView {
     
         } catch (MedicoNaoEncontradoException e) {
             System.out.println("Médico não encontrado: " + e.getMessage());
-    
         } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException e) {
             System.err.println("Erro ao buscar médico: " + e.getMessage());
             System.out.println("== Erro ao buscar médico. Contate o administrador. ==");
@@ -478,9 +474,9 @@ public class ClinicaView {
     }
 
     private void agendarConsulta() {
-        System.out.println("=======================");
+        System.out.println("======================");
         System.out.println("== Agendar Consulta ==");
-        System.out.println("=======================");
+        System.out.println("======================");
 
         try {
             int idPaciente = lerInt("Id do Paciente");
@@ -493,20 +489,15 @@ public class ClinicaView {
 
         } catch (PacienteNaoEncontradoException e) {
             System.out.println("== Paciente não encontrado: " + e.getMessage() + " ==");
-
         } catch (MedicoNaoEncontradoException e) {
             System.out.println("== Médico não encontrado: " + e.getMessage() + " ==");
-
         } catch (DadosObrigatoriosException e) {
             System.out.println("== Campo obrigatório não preenchido: " + e.getMessage() + " ==");
-
         } catch (DataInvalidaException e) {
             System.out.println("== Data inválida: " + e.getMessage() + " ==");
-
         } catch (ValorInvalidoException e) {
             System.out.println("== Valor inválido: " + e.getMessage() + " ==");
-
-        } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException | ClassNotFoundException e) {
+        } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException e) {
             System.err.println("Erro ao agendar consulta: " + e.getMessage());
             System.out.println("== Erro ao agendar consulta. Contate o administrador. ==");
         }
@@ -524,8 +515,7 @@ public class ClinicaView {
             System.out.println("Consulta deletada com sucesso");
 
         } catch (ConsultaNaoEncontradaException e) {
-            System.out.println("== Consulta não encontrada: " + e.getMessage() + " ==");
-
+            System.out.println("== " + e.getMessage() + " ==");
         } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException e) {
             System.err.println("Erro ao deletar consulta: " + e.getMessage());
             System.out.println("== Erro ao deletar consulta. Contate o administrador. ==");
@@ -533,9 +523,9 @@ public class ClinicaView {
     }
 
     private void cancelarConsulta() {
-        System.out.println("========================");
+        System.out.println("=======================");
         System.out.println("== Cancelar Consulta ==");
-        System.out.println("========================");
+        System.out.println("=======================");
 
         try {
             int id = lerInt("Id da Consulta");
@@ -545,7 +535,8 @@ public class ClinicaView {
 
         } catch (ConsultaNaoEncontradaException e) {
             System.out.println("== Consulta não encontrada: " + e.getMessage() + " ==");
-
+        } catch (ConsultaNaoCancelavelException e) {
+            System.out.println("== " + e.getMessage() + " ==");
         } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException e) {
             System.err.println("Erro ao cancelar consulta: " + e.getMessage());
             System.out.println("== Erro ao cancelar consulta. Contate o administrador. ==");
@@ -566,10 +557,10 @@ public class ClinicaView {
 
         } catch (ConsultaNaoEncontradaException e) {
             System.out.println("== Consulta não encontrada: " + e.getMessage() + " ==");
-
         } catch (DataInvalidaException e) {
-            System.out.println(e.getMessage());
-
+            System.out.println("== Data inválida: " + e.getMessage() + " ==");
+        } catch (ConsultaNaoRemarcavelException e) {
+            System.out.println("== " + e.getMessage() + " ==");
         } catch (ArquivoNaoEncontradoException | ErroAoLerArquivoException | ErroAoSalvarException e) {
             System.err.println("Erro ao remarcar consulta: " + e.getMessage());
             System.out.println("== Erro ao remarcar consulta. Contate o administrador. ==");
@@ -593,20 +584,16 @@ public class ClinicaView {
                 System.out.println(c.exibirResumo());
                 System.out.println("-------------------------------");
             }
-
-        } catch (ArquivoNaoEncontradoException e) {
-            System.out.println("Nenhuma consulta cadastrada.");
-
-        } catch (ErroAoLerArquivoException | ClassNotFoundException e) {
+        } catch (ErroAoLerArquivoException | ArquivoNaoEncontradoException e) {
             System.err.println("Erro ao listar consultas: " + e.getMessage());
             System.out.println("== Erro ao carregar lista de consultas. Contate o administrador. ==");
         }
     }
 
     private void listarConsultasPorMedico() {
-        System.out.println("==============================");
+        System.out.println("==========================");
         System.out.println("== Consultas por Médico ==");
-        System.out.println("==============================");
+        System.out.println("==========================");
 
         try {
             int idMedico = lerInt("Id do Médico");
@@ -621,20 +608,16 @@ public class ClinicaView {
                 System.out.println(c.exibirResumo());
                 System.out.println("-------------------------------");
             }
-
-        } catch (ArquivoNaoEncontradoException e) {
-            System.out.println("Nenhuma consulta cadastrada.");
-
-        } catch (ErroAoLerArquivoException | ClassNotFoundException e) {
+        } catch (ErroAoLerArquivoException | ArquivoNaoEncontradoException e) {
             System.err.println("Erro ao listar consultas por médico: " + e.getMessage());
             System.out.println("== Erro ao carregar consultas. Contate o administrador. ==");
         }
     }
 
     private void listarConsultasPorStatus() {
-        System.out.println("==============================");
+        System.out.println("==========================");
         System.out.println("== Consultas por Status ==");
-        System.out.println("==============================");
+        System.out.println("==========================");
 
         try {
             StatusConsulta status = selecionarStatusConsulta();
@@ -649,11 +632,7 @@ public class ClinicaView {
                 System.out.println(c.exibirResumo());
                 System.out.println("-------------------------------");
             }
-
-        } catch (ArquivoNaoEncontradoException e) {
-            System.out.println("Nenhuma consulta cadastrada.");
-
-        } catch (ErroAoLerArquivoException | ClassNotFoundException e) {
+        } catch (ErroAoLerArquivoException | ArquivoNaoEncontradoException e) {
             System.err.println("Erro ao listar consultas por status: " + e.getMessage());
             System.out.println("== Erro ao carregar consultas. Contate o administrador. ==");
         }

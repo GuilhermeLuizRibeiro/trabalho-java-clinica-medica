@@ -32,11 +32,11 @@ public class Medico extends Pessoa {
         this.especialidade = especialidade;
     }
 
-    public double getsalario() {
+    public double getSalario() {
         return salario;
     }
 
-    public void setsalario(double salario) {
+    public void setSalario(double salario) {
         this.salario = salario;
     }
 
